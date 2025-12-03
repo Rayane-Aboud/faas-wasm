@@ -3,7 +3,7 @@ use std::{
     sync::Arc
 };
 
-use crate::node::{self, NodeDto};
+use crate::node::{Node};
 
 pub struct Supervisor {
   pub nodes: HashMap<
@@ -13,20 +13,25 @@ pub struct Supervisor {
 }
 
 impl Supervisor {
-  pub fn new(){
+  pub fn new()-> Supervisor{
     Supervisor {
       nodes: HashMap::<Arc<str>,Node>::new()
     }
   }
   
+  /* monitoring */
   //heartbeats
-  pub fn check_node_heartbeat(&self, id: &str)->bool{
+  pub fn check_node_heartbeat(&self, id: &str) -> bool {
     if let Some(node) = self.nodes.get(id){
-        node.is_alive()
+      return node.is_alive();
     }
     false
   }
 
+  pub fn get_node_health_summary(&self) {
+    
+  }
+  
 
 
 
