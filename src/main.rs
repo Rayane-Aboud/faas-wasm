@@ -2,6 +2,7 @@ mod node;
 mod supervisor;
 mod utils;
 mod task;
+mod config;
 use anyhow::Result;
 
 
