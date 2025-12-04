@@ -1,16 +1,22 @@
 use std::{collections::HashMap, sync::Arc};
 
+use tokio::time::Instant;
+
 use crate::task::Task;
 
 /*structure of the node when the app is up*/
-
-pub struct Node {
+pub trait Node{
+    fn is_alive(&self)-> bool;
+    fn load_summary(&self)->(f32,f32,Option<f32>);
+    fn sync_info(&mut self);
+}
+/*pub struct Node {
   pub id: Arc<str>,
   pub url: Arc<String>,
   pub status: NodeStatus,
   pub resources: Resources,
   pub tasks: HashMap<Arc<str>, Task>
-}
+}*/
 
 #[derive(PartialEq)]
 pub enum NodeStatus {
@@ -18,28 +24,50 @@ pub enum NodeStatus {
   Overloaded,
   Dead, 
 }
-
-pub struct NodeDto{
-    pub url: Arc<str>,
-    pub status: NodeStatus,
+pub enum TaskStatus {
+  Running,
+  Pending,
+}
+pub struct InMemoryNode{
+  pub name: Arc<str>,
+  pub tasks: HashMap<Arc<str>, Task>,
+  pub status: NodeStatus,
+  pub current_task_status: TaskStatus,
+  pub resources: Resources,
+  pub last_heartbeat_timestamp: Instant
 }
 
-
-
-impl Node {
-  pub fn is_alive(&self)-> bool {
-    self.status == NodeStatus::Alive
-  }
-  pub fn load_summary(&self)->(f32,f32,Option<f32>) {
-    (
-      self.resources.cpu_usage_percentage(),
-      self.resources.mem_usage_percentage(),
-      self.resources.gpu_usage_percentage()
-    )
-  }
-  pub fn sync_info(&mut self) {}
+struct ThreadBasedNode{
+  //thread handle,
+  pub thread_id:Arc<str>,
+  pub tasks: HashMap<Arc<str>, Task>,
+  pub status: NodeStatus,
+  pub current_task_status: TaskStatus,
+  pub thread_status: ThreadStatus,
+  pub resources: Resources,
+  pub last_heartbeat_timestamp: Instant
 }
 
+struct OsProcessNode {
+  pub pid:Arc<str>, 
+  pub tasks: HashMap<Arc<str>, Task>,
+  pub resources: Resources,
+  pub last_heartbeat_timestamp: Instant
+}
+
+struct ContainerNode{
+
+}
+struct VirtualMachineNode{
+  
+}
+struct NetworkNode{
+
+}
+pub enum ThreadStatus {
+  Running,
+  Panicked
+}
 #[derive(Clone, Copy)]
 pub struct Resources {
     pub cpu_total: u32,
