@@ -1,4 +1,7 @@
+use serde::{Deserialize, Serialize};
+
 #[derive(Clone, Copy)]
+#[derive(Serialize,Deserialize)]
 pub struct Resources {
     pub cpu_total: u32,
     pub cpu_used: u32,
@@ -31,6 +34,8 @@ impl Resources {
 }
 
 #[derive(Clone, Copy)]
+#[derive(Serialize,Deserialize)]
+
 pub struct QueueInfo {
     pub pending: u32,
     pub in_flight: u32,
